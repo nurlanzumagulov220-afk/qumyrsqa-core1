@@ -25,14 +25,19 @@ QumyrsqaCore is an execution oracle that:
 
 1. Captures a real-world event (QR / sensor / upload)
 2. Verifies it via deterministic consensus (Tamga → Tol)
-3. Calculates Trust Score
+3. Calculates Trust Score from multiple independent sources (quorum-based validation)
 4. Automatically executes a smart contract on Solana
 
 👉 If Trust > threshold → funds are released
 👉 If Trust ≤ threshold → funds are blocked
 
 ---
+## 📦 SDK Example
+```javascript
+import { Qumyrsqa } from './sdk/qumyrsqa.js';
 
+const qr = new Qumyrsqa({ clientId: 'demo', apiKey: 'xxx' });
+const event = await qr.verify({...});
 🔄 Demo Flow
 
 Document Upload / QR Scan
