@@ -136,7 +136,7 @@ Sub-second finality, ultra-low fees, ideal for high-frequency real-world events.
 
 - **Solana Frontier Hackathon** (Apr 6 – May 10)
 - Project on Colosseum
-- Weekly Update video: [Loom / YouTube](ссылка_на_видео)
+- Weekly Update video: [YouTube](https://youtu.be/z3qcDvhTxAU)
 
 ---
 
