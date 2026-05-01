@@ -32,12 +32,7 @@ QumyrsqaCore is an execution oracle that:
 👉 If Trust ≤ threshold → funds are blocked
 
 ---
-## 📦 SDK Example
-```javascript
-import { Qumyrsqa } from './sdk/qumyrsqa.js';
 
-const qr = new Qumyrsqa({ clientId: 'demo', apiKey: 'xxx' });
-const event = await qr.verify({...});
 🔄 Demo Flow
 
 Document Upload / QR Scan
