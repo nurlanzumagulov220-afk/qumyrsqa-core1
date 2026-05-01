@@ -1,0 +1,64 @@
+import { useState, useEffect } from 'react';
+import { ShieldAlert, Zap, Activity, Database } from 'lucide-react';
+
+export default function App() {
+  const [balance, setBalance] = useState(1000);
+  const [log, setLog] = useState<string[]>(['[SYSTEM] QumyrsqaCore Node TT-01 Initialized.']);
+  const [isSlashing, setIsSlashing] = useState(false);
+
+  const addAtom = () => {
+    const reward = 50;
+    setBalance(prev => prev + reward);
+    setLog(prev => [`✅ [TOL] Atom Finalized. Reward: +${reward} Amanat`, ...prev.slice(0, 10)]);
+  };
+
+  const simulateAttack = () => {
+    setIsSlashing(true);
+    const penalty = 200;
+    setBalance(prev => prev - penalty);
+    setLog(prev => [`⚠️ [SLASHING] Double-spend detected! Penalty: -${penalty}`, ...prev.slice(0, 10)]);
+    setTimeout(() => setIsSlashing(false), 1000);
+  };
+
+  return (
+    <div style={{ backgroundColor: isSlashing ? '#450a0a' : '#050505', color: '#00ffcc', minHeight: '100vh', padding: '2rem', fontFamily: 'monospace', transition: 'background-color 0.2s' }}>
+      <header style={{ borderBottom: '2px solid #00ffcc', paddingBottom: '1rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h1 style={{ margin: 0, letterSpacing: '2px' }}>QUMYRSQA_CORE // FRONTIER_DASHBOARD</h1>
+        <div style={{ display: 'flex', gap: '1rem' }}>
+          <Activity size={20} color={isSlashing ? '#ff4444' : '#00ffcc'} />
+          <span>STATUS: {isSlashing ? 'CRITICAL_PENALTY' : 'NOMINAL'}</span>
+        </div>
+      </header>
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.5fr', gap: '2rem' }}>
+        <section>
+          <div style={{ border: '1px solid #00ffcc', padding: '2rem', backgroundColor: '#000', textAlign: 'center' }}>
+            <h2 style={{ color: '#fff', fontSize: '1rem', textTransform: 'uppercase' }}>Current Amanat Stake</h2>
+            <p style={{ fontSize: '5rem', fontWeight: 'bold', margin: '1rem 0', color: isSlashing ? '#ff4444' : '#00ffcc' }}>{balance}</p>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+              <button onClick={addAtom} style={{ background: '#00ffcc', color: '#000', border: 'none', padding: '1rem', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <Zap size={18} /> MINT ATOM
+              </button>
+              <button onClick={simulateAttack} style={{ background: 'transparent', color: '#ff4444', border: '1px solid #ff4444', padding: '1rem', cursor: 'pointer', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <ShieldAlert size={18} /> TRIGGER SLASH
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <section style={{ border: '1px solid #333', padding: '1.5rem', backgroundColor: '#0a0a0a' }}>
+          <h3 style={{ marginTop: 0, borderBottom: '1px solid #333', paddingBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <Database size={18} /> WRITE-AHEAD LOG (WAL)
+          </h3>
+          <div style={{ height: '250px', overflowY: 'auto' }}>
+            {log.map((entry, i) => (
+              <div key={i} style={{ padding: '0.2rem 0', borderBottom: '1px solid #1a1a1a', fontSize: '0.9rem', color: entry.includes('⚠️') ? '#ff4444' : '#00ffcc' }}>
+                {entry}
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
+    </div>
+  );
+}
