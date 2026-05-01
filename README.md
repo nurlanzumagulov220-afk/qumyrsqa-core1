@@ -1,39 +1,31 @@
-QumyrsqaCore
+# QumyrsqaCore
 
-Execution Oracle for Solana
-Converts real-world events into autonomous on-chain settlements.
+**Execution Oracle for Solana** — converts real-world events into autonomous on-chain settlements.
+
+QR / Upload → Tamga → Tol → Trust Score → Solana TX → Funds Released
 
 ---
 
-🚨 Problem
+## 🚨 Problem
 
 Smart contracts cannot verify real-world events.
 
-Businesses today:
-
-- lose money on fraud
-- rely on manual verification
-- spend days on arbitration
-
-Result: slow, expensive, unreliable trust.
+Businesses lose money on fraud, rely on manual verification, and spend days on arbitration.
 
 ---
 
-⚡ Solution
+## ⚡ Solution
 
 QumyrsqaCore is an execution oracle that:
 
 1. Captures a real-world event (QR / sensor / upload)
 2. Verifies it via deterministic consensus (Tamga → Tol)
 3. Calculates Trust Score from multiple independent sources (quorum-based validation)
-4. Automatically executes a smart contract on Solana
-
-👉 If Trust > threshold → funds are released
-👉 If Trust ≤ threshold → funds are blocked
+4. Automatically executes a Solana smart contract — funds released if trusted, blocked if not
 
 ---
 
-🔄 Demo Flow
+## 🔄 Demo Flow
 
 Document Upload / QR Scan
         ↓
@@ -49,25 +41,16 @@ Escrow → SETTLED or BLOCKED
 
 ---
 
-🎯 Use Case — LegalTech (Nace.AI)
+## 🎯 Use Case — LegalTech (Nace.AI)
 
-Verified Audit → Automatic Settlement
+**Verified Audit → Automatic Settlement**
 
-Before:
-
-- manual audit verification
-- fraud risk
-- long dispute resolution
-
-After:
-
-- instant verification (<3 sec)
-- automatic escrow release
-- zero fraudulent payouts
+Before: manual audit verification, fraud risk, long dispute resolution
+After: instant verification (<3 sec), automatic escrow release, zero fraudulent payouts
 
 ---
 
-🏗 Architecture
+## 🏗 Architecture
 
 - Go (Aksakal Gateway) — event processing & oracle signing
 - Rust (Anchor) — Solana smart contract
@@ -77,7 +60,7 @@ After:
 
 ---
 
-🔐 Security
+## 🔐 Security
 
 - Ed25519 oracle signature verification (on-chain)
 - Replay protection (event processed flag + PDA)
@@ -86,35 +69,31 @@ After:
 
 ---
 
-🔗 Example Transaction (Devnet)
+## 🔗 Live Transaction (Devnet)
 
-https://explorer.solana.com/tx/✅ Solana TX confirmed
-5bdl9voegyh8
-⏱ Latency to settlement: 2.313s](https://explorer.solana.com/tx/5bdl9voegyh8?cluster=devnet)
+[View on Solana Devnet](https://explorer.solana.com/tx/5bdl9voegyh8?cluster=devnet) — confirmed in 2.3s
 
 ---
 
-💻 How to Run (Demo)
+## 💻 How to Run (Demo)
 
-1. Start Gateway
-
+```bash
+# 1. Start Gateway
 go run cmd/field_hub/main.go
 
-2. Deploy Solana Program
+# 2. Deploy Solana Program
+anchor build && anchor deploy --provider.cluster devnet
 
-anchor build
-anchor deploy --provider.cluster devnet
-
-3. Run Visualizer
-
+# 3. Run Visualizer
 cd web/visualizer
-npm install
-npm run dev
+npm install && npm run dev
+```
 
 ---
 
-📦 SDK Example
+## 📦 SDK Example
 
+```javascript
 import { Qumyrsqa } from '@tsp/core-sdk';
 
 const qr = new Qumyrsqa({
@@ -130,58 +109,34 @@ const event = await qr.verify({
 
 console.log(event.status);     // FINAL / BLOCKED
 console.log(event.trustScore); // 87
+```
 
 ---
 
-🧪 Demo Scenarios
+## 🧪 Demo Scenarios
 
-✅ Valid Event
-
-- Trust Score: 87%
-- Status: SETTLED
-- Funds released
-
-❌ Invalid Event
-
-- Trust Score: 45%
-- Status: BLOCKED
-- Funds frozen
+✅ **Valid Event** — Trust Score: 87% | Status: SETTLED | Funds released
+❌ **Invalid Event** — Trust Score: 45% | Status: BLOCKED | Funds frozen
 
 ---
 
-⚡ Why Solana
+## ⚡ Why Solana
 
-- Sub-second finality
-- Ultra-low transaction fees
-- Ideal for high-frequency real-world events
+Sub-second finality, ultra-low fees, ideal for high-frequency real-world events.
 
 ---
 
-🧠 Innovation
+## 🧠 Innovation
 
-We solve the oracle problem:
-
-«Turning real-world events into trusted, executable blockchain actions»
-
-Not just data →
-👉 Execution layer for reality
+**Execution Oracle for reality**: not just data delivery → autonomous settlement
 
 ---
+
 ## 🏆 Hackathon Status
+
 - **Solana Frontier Hackathon** (Apr 6 – May 10)
-- Project on Colosseum: [QumyrsqaCore](https://arena.colosseum.org/...)
-- Weekly Update video: [Loom / YouTube](твоя_ссылка_на_видео)
-🚀 Status
-
-- MVP (Devnet)
-- Working oracle → smart contract bridge
-- Real use case: LegalTech (audit verification)
+- Project on Colosseum
+- Weekly Update video: [Loom / YouTube](ссылка_на_видео)
 
 ---
 
-📬 Contact
-
-Team TSP
-QumyrsqaCore
-
----
