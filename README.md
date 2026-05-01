@@ -1,73 +1,185 @@
-# React + TypeScript + Vite
+QumyrsqaCore
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Execution Oracle for Solana
+Converts real-world events into autonomous on-chain settlements.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+🚨 Problem
 
-## React Compiler
+Smart contracts cannot verify real-world events.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Businesses today:
 
-## Expanding the ESLint configuration
+- lose money on fraud
+- rely on manual verification
+- spend days on arbitration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Result: slow, expensive, unreliable trust.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+⚡ Solution
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+QumyrsqaCore is an execution oracle that:
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+1. Captures a real-world event (QR / sensor / upload)
+2. Verifies it via deterministic consensus (Tamga → Tol)
+3. Calculates Trust Score
+4. Automatically executes a smart contract on Solana
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+👉 If Trust > threshold → funds are released
+👉 If Trust ≤ threshold → funds are blocked
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+---
+
+🔄 Demo Flow
+
+Document Upload / QR Scan
+        ↓
+Tamga (event identity + signature)
+        ↓
+Tol (verification consensus)
+        ↓
+Trust Score (e.g. 87%)
+        ↓
+Solana Transaction (Devnet)
+        ↓
+Escrow → SETTLED or BLOCKED
+
+---
+
+🎯 Use Case — LegalTech (Nace.AI)
+
+Verified Audit → Automatic Settlement
+
+Before:
+
+- manual audit verification
+- fraud risk
+- long dispute resolution
+
+After:
+
+- instant verification (<3 sec)
+- automatic escrow release
+- zero fraudulent payouts
+
+---
+
+🏗 Architecture
+
+- Go (Aksakal Gateway) — event processing & oracle signing
+- Rust (Anchor) — Solana smart contract
+- React — Event Visualizer
+- SQLite (Edge) — local event storage
+- Solana Devnet — execution layer
+
+---
+
+🔐 Security
+
+- Ed25519 oracle signature verification (on-chain)
+- Replay protection (event processed flag + PDA)
+- Escrow accounts via PDA
+- Oracle private key isolated on edge device
+
+---
+
+🔗 Example Transaction (Devnet)
+
+https://explorer.solana.com/tx/YOUR_TX_HERE?cluster=devnet
+
+---
+
+💻 How to Run (Demo)
+
+1. Start Gateway
+
+go run cmd/field_hub/main.go
+
+2. Deploy Solana Program
+
+anchor build
+anchor deploy --provider.cluster devnet
+
+3. Run Visualizer
+
+cd web/visualizer
+npm install
+npm run dev
+
+---
+
+📦 SDK Example
+
+import { Qumyrsqa } from '@tsp/core-sdk';
+
+const qr = new Qumyrsqa({
+  clientId: 'demo',
+  apiKey: 'qmc_live_xxx'
+});
+
+const event = await qr.verify({
+  document_hash: 'sha256:abc123',
+  document_type: 'legal_audit',
+  counterparty_id: 'KZ-ENT-001'
+});
+
+console.log(event.status);     // FINAL / BLOCKED
+console.log(event.trustScore); // 87
+
+---
+
+🧪 Demo Scenarios
+
+✅ Valid Event
+
+- Trust Score: 87%
+- Status: SETTLED
+- Funds released
+
+❌ Invalid Event
+
+- Trust Score: 45%
+- Status: BLOCKED
+- Funds frozen
+
+---
+
+⚡ Why Solana
+
+- Sub-second finality
+- Ultra-low transaction fees
+- Ideal for high-frequency real-world events
+
+---
+
+🧠 Innovation
+
+We solve the oracle problem:
+
+«Turning real-world events into trusted, executable blockchain actions»
+
+Not just data →
+👉 Execution layer for reality
+
+---
+## 🏆 Hackathon Status
+- **Solana Frontier Hackathon** (Apr 6 – May 10)
+- Project on Colosseum: [QumyrsqaCore](https://arena.colosseum.org/...)
+- Weekly Update video: [Loom / YouTube](твоя_ссылка_на_видео)
+🚀 Status
+
+- MVP (Devnet)
+- Working oracle → smart contract bridge
+- Real use case: LegalTech (audit verification)
+
+---
+
+📬 Contact
+
+Team TSP
+QumyrsqaCore
+
+---
