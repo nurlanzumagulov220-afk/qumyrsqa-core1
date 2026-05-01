@@ -88,7 +88,9 @@ After:
 
 🔗 Example Transaction (Devnet)
 
-https://explorer.solana.com/tx/YOUR_TX_HERE?cluster=devnet
+https://explorer.solana.com/tx/✅ Solana TX confirmed
+5bdl9voegyh8
+⏱ Latency to settlement: 2.313s
 
 ---
 
