@@ -25,7 +25,7 @@ QumyrsqaCore is an execution oracle that:
 
 1. Captures a real-world event (QR / sensor / upload)
 2. Verifies it via deterministic consensus (Tamga → Tol)
-3. Calculates Trust Score
+3. Calculates Trust Score from multiple independent sources (quorum-based validation)
 4. Automatically executes a smart contract on Solana
 
 👉 If Trust > threshold → funds are released
