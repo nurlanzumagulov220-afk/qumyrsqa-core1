@@ -95,7 +95,7 @@ After:
 
 https://explorer.solana.com/tx/✅ Solana TX confirmed
 5bdl9voegyh8
-⏱ Latency to settlement: 2.313s
+⏱ Latency to settlement: 2.313s](https://explorer.solana.com/tx/5bdl9voegyh8?cluster=devnet)
 
 ---
 
