@@ -1,11 +1,18 @@
 # 🐜 QumyrsqaCore
-> Automatic clearing of real-world events. Zero manual trust.
+
+> ⚠️ **Прозрачность**: Этот репозиторий содержит демонстрационный код и вымышленные сценарии 
+> (включая компанию "Nice.like"), созданные исключительно для участия в Solana Frontier Hackathon. 
+> Никакие реальные организации не задействованы.
+
+> *Automatic clearing of real-world events. Zero manual trust.*
 
 ![Solana Frontier](https://img.shields.io/badge/Solana-Frontier-blue)
 ![Status](https://img.shields.io/badge/Status-MVP-green)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
+![Track](https://img.shields.io/badge/Track-METAFORRA-purple)
 
-![Demo](assets/demo.gif)
+<!-- Demo GIF: Uncomment when asset is ready -->
+<!-- ![Demo](assets/demo.gif) -->
 
 ---
 
@@ -44,8 +51,8 @@ QumyrsqaCore implements **Tamga-Tol-Amanat** logic:
 | ✅ Valid Event | 87% | SETTLED | 💰 100 USDC → Nice.like Wallet |
 | ❌ Invalid Event | 45% | BLOCKED | ⚠ Funds Frozen + Manual Review |
 
-👉 **Watch 90-sec demo**: [YouTube Link](https://youtube.com/your-link)  
-👉 **Verify on-chain**: [Solana Devnet TX](https://explorer.solana.com/tx/your-tx?cluster=devnet)
+👉 **Watch 90-sec demo**: *[Video recording in progress — link will be updated by May 4]*  
+👉 **Verify on-chain**: *[Devnet TX will be added after final demo recording]*
 
 ---
 
@@ -63,7 +70,11 @@ QumyrsqaCore implements **Tamga-Tol-Amanat** logic:
      ↓
 [Outcome: Money moved or protected]
 ```
+
+> 🔍 **For technical evaluators**: See [🧠 Architecture Deep Dive](./ARCHITECTURE.md) for protocol specifications, security model, and integration details.
+
 **Stack**: Go (edge) • Rust/Anchor (Solana) • React/TS (UI) • Framer Motion (animations)
+
 ---
 
 ## 🚀 Why Solana?
@@ -79,6 +90,7 @@ QumyrsqaCore implements **Tamga-Tol-Amanat** logic:
 ```
 ├── README.md                 # This file
 ├── HACKATHON.md             # Judge quick-start guide
+├── ARCHITECTURE.md          # Technical deep-dive (for evaluators)
 ├── /client                  # React + Vite + TypeScript frontend
 │   └── EventVisualizer.jsx  # Animated demo component
 ├── /program                 # Solana Anchor program (Rust)
@@ -101,6 +113,8 @@ cd client && npm install && npm run dev
 # → Open localhost:5173 → click "Simulate VALID/FRAUD Event"
 ```
 
+---
+
 ## 📞 Team
 **Kalb Master (Nurlan Zhumagulov)** — Founder & System Architect  
 📍 Almaty, Kazakhstan  
@@ -108,9 +122,11 @@ cd client && npm install && npm run dev
 
 *All core IP, code, and Tamga-logic under sole development — ensuring sovereignty and focused iteration.*
 
+---
+
 ## 🏆 Hackathon Submission
 - **Event**: Solana Frontier Hackathon + Superteam KZ
-- **Tracks**: METAFORRA (consumer UX) + Open Track
-- **Status**: MVP ready • Demo live • Seeking mentorship for swarm scaling
+- **Tracks**: `METAFORRA` (consumer UX) + `Open Track`
+- **Status**: MVP ready • Demo in progress • Seeking mentorship for swarm scaling
 
 > *"We don't just verify data. We automatically execute deals based on reality."*
