@@ -51,10 +51,10 @@ QumyrsqaCore implements **Tamga-Tol-Amanat** logic:
 | ✅ Valid Event | 87% | SETTLED | 💰 100 USDC → Nice.like Wallet |
 | ❌ Invalid Event | 45% | BLOCKED | ⚠ Funds Frozen + Manual Review |
 
-## 🎥 Demo Video
+## 🎥 Videos
 
-👉 **Watch Cinematic Demo**: [Nice.like × QumyrsqaCore — Verified Audit](https://youtu.be/BVKSWJ--Gl4)  
-*(Unlisted • 1:12 • English subs)*
+**Quick Demo (1:12)**: [Watch](https://youtu.be/BVKSWJ--Gl4)  
+**Full Presentation (7:23)**: [Watch](https://youtu.be/Tmu3Idt2EKY)
 
 👉 **Verify On-Chain**: [Solana Devnet TX](https://explorer.solana.com/tx/KT4deDyzHxAxe37ydYiffVAtBF6HFT5puSLNdS3KV2U69YCNt27XhcDMTWsENoYdXcqaERuGnSv1wnzQZahWQCc?cluster=devnet)
 ---
