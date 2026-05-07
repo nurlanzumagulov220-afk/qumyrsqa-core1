@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Qumyrsqa SDK — Browser Demo</title>
+  <style>
+    body { font-family: monospace; background: #0a0e1a; color: #e5e7eb; padding: 32px; }
+    h1 { color: #00C853; }
+    button { background: #00C853; color: black; border: none; padding: 10px 24px;
+             border-radius: 8px; cursor: pointer; font-weight: bold; margin: 6px; }
+    button:hover { opacity: 0.85; }
+    pre { background: #111827; padding: 16px; border-radius: 8px; color: #00C853;
+          font-size: 12px; overflow-x: auto; white-space: pre-wrap; }
+    input { background: #111827; color: white; border: 1px solid #1f2937;
+            padding: 8px 12px; border-radius: 6px; width: 260px; margin: 4px; }
+    label { color: #9ca3af; font-size: 12px; display: block; margin-top: 8px; }
+    .blocked { color: #ef4444; }
+    .verified { color: #00C853; }
+  </style>
+</head>
+<body>
+  <h1>◈ Qumyrsqa SDK — Browser Demo</h1>
+
+  <section>
+    <h3>1. Auth</h3>
+    <label>Email</label>
+    <input id="email" value="demo@qumyrsqa.kz">
+    <label>Password</label>
+    <input id="password" type="password" value="demo123">
+    <label>Name (register only)</label>
+    <input id="name" value="Demo User">
+    <br>
+    <button onclick="doRegister()">Register</button>
+    <button onclick="doLogin()">Login</button>
+  </section>
+
+  <section>
+    <h3>2. Upload PDF</h3>
+    <input type="file" id="pdfFile" accept=".pdf">
+    <button onclick="doUpload()">Upload Document</button>
+  </section>
+
+  <section>
+    <h3>3. Verify Tamga</h3>
+    <button onclick="doVerify(true)">✅ Simulate VERIFIED (GPS + Gyro)</button>
+    <button onclick="doVerify(false)">🚫 Simulate BLOCKED (no GPS)</button>
+  </section>
+
+  <section>
+    <h3>4. Cabinet</h3>
+    <button onclick="doCabinet()">Get My Cabinet</button>
+  </section>
+
+  <pre id="output">// результаты появятся здесь...</pre>
+
+<script type="module">
+// ── Inline SDK (копия src/index.ts скомпилированного) ────────────────────────
+
+class QumyrsqaError extends Error {
+  constructor(message, statusCode) {
+    super(message)
+    this.name = 'QumyrsqaError'
+    this.statusCode = statusCode
+  }
+}
+
+class QumyrsqaSDK {
+  constructor({ apiUrl = 'http://localhost:8000', token } = {}) {
+    this.apiUrl = apiUrl.replace(/\/$/, '')
+    this.token = token ?? null
+  }
+
+  setToken(t) { this.token = t }
+  clearToken() { this.token = null }
+
+  get _authHeader() {
+    return this.token ? { Authorization: `Bearer ${this.token}` } : {}
+  }
+
+  async _req(method, path, body) {
+    const res = await fetch(`${this.apiUrl}${path}`, {
+      method,
+      headers: { 'Content-Type': 'application/json', ...this._authHeader },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    })
+    const data = await res.json()
+    if (!res.ok) throw new QumyrsqaError(data?.detail ?? `HTTP ${res.status}`, res.status)
+    return data
+  }
+
+  async health() { return this._req('GET', '/health') }
+
+  async uploadDocument(file) {
+    const form = new FormData()
+    form.append('file', file)
+    const res = await fetch(`${this.apiUrl}/upload-document`, {
+      method: 'POST', headers: this._authHeader, body: form,
+    })
+    const data = await res.json()
+    if (!res.ok) throw new QumyrsqaError(data?.detail ?? `HTTP ${res.status}`, res.status)
+    return { documentHash: data.document_hash, filename: data.filename, sizeKb: data.size_kb }
+  }
+
+  async verifyTamga(req) {
+    const d = await this._req('POST', '/verify-tamga', {
+      device_id: req.deviceId,
+      gps: req.gps,
+      gyroscope: req.gyroscope,
+      wifi_mac: req.wifiMac ?? [],
+      timestamp: req.timestamp ?? new Date().toISOString(),
+      document_hash: req.documentHash,
+    })
+    return {
+      tamgaId: d.tamga_id, trustScore: d.trust_score,
+      status: d.status, settlement: d.settlement, message: d.message,
+      solanaExplorer: d.solana_explorer,
+      tolSources: d.tol_sources, latencyMs: d.latency_ms,
+      hashChain: d.hash_chain, evidence: d.evidence,
+    }
+  }
+
+  readonly auth = {
+    register: async (name, email, password) => {
+      const d = await this._req('POST', '/auth/register', { name, email, password })
+      this.setToken(d.token)
+      return { userId: d.user_id, name: d.name, email: d.email, token: d.token }
+    },
+    login: async (email, password) => {
+      const d = await this._req('POST', '/auth/login', { email, password })
+      this.setToken(d.token)
+      return { userId: d.user_id, name: d.name, email: d.email, token: d.token }
+    },
+    logout: () => this.clearToken(),
+  }
+
+  async getCabinet() { return this._req('GET', '/cabinet') }
+  async listTamga(limit = 20) { return this._req('GET', `/tamga-list?limit=${limit}`) }
+}
+
+// ── Wire up buttons ───────────────────────────────────────────────────────────
+
+const sdk = new QumyrsqaSDK()
+const out = document.getElementById('output')
+let docHash = null
+
+function show(data) {
+  out.textContent = JSON.stringify(data, null, 2)
+}
+
+function showError(e) {
+  out.innerHTML = `<span class="blocked">Error: ${e.message}</span>`
+}
+
+window.doRegister = async () => {
+  try {
+    const user = await sdk.auth.register(
+      document.getElementById('name').value,
+      document.getElementById('email').value,
+      document.getElementById('password').value,
+    )
+    show(user)
+  } catch (e) { showError(e) }
+}
+
+window.doLogin = async () => {
+  try {
+    const user = await sdk.auth.login(
+      document.getElementById('email').value,
+      document.getElementById('password').value,
+    )
+    show(user)
+  } catch (e) { showError(e) }
+}
+
+window.doUpload = async () => {
+  const file = document.getElementById('pdfFile').files[0]
+  if (!file) { out.textContent = 'Выберите PDF файл'; return }
+  try {
+    const result = await sdk.uploadDocument(file)
+    docHash = result.documentHash
+    show(result)
+  } catch (e) { showError(e) }
+}
+
+window.doVerify = async (withGps) => {
+  try {
+    const result = await sdk.verifyTamga({
+      deviceId: 'browser-demo',
+      gps: withGps
+        ? { lat: 43.2551, lng: 76.9126, accuracy: 15 }
+        : { lat: 0, lng: 0, accuracy: 0 },
+      gyroscope: { x: 0.031, y: -0.018, z: 0.004 },
+      documentHash: docHash ?? 'sha256:demo_hash_no_document_uploaded',
+    })
+    show(result)
+    out.classList.toggle('verified', result.status === 'VERIFIED')
+    out.classList.toggle('blocked', result.status === 'BLOCKED')
+  } catch (e) { showError(e) }
+}
+
+window.doCabinet = async () => {
+  try { show(await sdk.getCabinet()) } catch (e) { showError(e) }
+}
+
+// Auto health check
+sdk.health().then(h => {
+  out.textContent = `// Подключено: ${h.service} v${h.version} | Aksakal: ${h.aksakal}\n// Зарегистрируйтесь или войдите, затем нажмите Verify`
+}).catch(() => {
+  out.textContent = '// Сервер недоступен. Запустите: bash start.sh'
+})
+</script>
+</body>
+</html>
