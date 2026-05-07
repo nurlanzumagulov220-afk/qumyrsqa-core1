@@ -1,72 +1,73 @@
-# 👋 Hello, Judge!
+# QumyrsqaCore — Hackathon Quick Start
 
-You have 3 minutes. Here's everything you need to know about QumyrsqaCore.
+> Solana Frontier Hackathon · METAFORRA + Open Track
 
----
+## In 10 Seconds
 
-## 🎯 In 10 Seconds
-**Problem**: Businesses lose money verifying trust manually.  
-**Solution**: We remove the human from verification → auto-execute on Solana.  
-**Result**: Fraud ↓ 12%→0%. Savings ↑ $2.10/event.
+**Problem**: Businesses lose 12% to fraud + 10% to manual verification.
+**Solution**: Hardware-anchored event fingerprint → automatic Solana settlement.
+**Result**: Fraud → 0%. Savings → $2.10/event.
 
----
-
-## 🎬 Watch This First (90 sec)
-▶️ [Demo Video Link](https://youtube.com/your-link)
-
-*Shows: Valid event → SETTLED → money moved. Invalid event → BLOCKED → money protected.*
-
----
-
-## 🔑 Key Differentiator vs Oracles
-| Oracle | QumyrsqaCore |
-|--------|-------------|
-| Delivers data | **Executes deals** |
-| "Price of BTC" | "Contract signed → release payment" |
-| Passive | **Active + autonomous** |
-
----
-
-## 💰 Demo Scenario: Nice.like (Virtual Firm)
-*Illustrative flow — architecture is production-ready.*
+## Full Stack
 
 ```
-Event: "Coffee batch delivered to cafe"
-↓
-Tamga: 8b1a...c91 (unique fingerprint)
-↓
-Tol: 3/3 sources confirm → Trust 87%
-↓
-Decision: SETTLED
-↓
-Solana TX: 100 USDC → Nice.like Wallet
-↓
-Savings: $2.10 vs manual process
+Go (Aksakal)     — Edge node, Tamga signing
+Python (FastAPI) — API Gateway, Tol Consensus, JWT Auth
+Rust (Anchor)    — Solana smart contract
+React + TS       — Web dashboard
+Flutter          — Mobile app (iOS/Android/Web)
+TypeScript SDK   — @qumyrsqa/sdk
+Python SDK       — pip install qumyrsqa
 ```
 
-**Bad path**: Trust 45% → BLOCKED → Funds frozen → Manual review.
+## Run in 3 Minutes
 
----
+```bash
+# Backend
+cd backend && bash start.sh
+# → http://localhost:8000/docs (Swagger UI)
 
-## 🧠 Why This Wins
-✅ Shows money (not just code)  
-✅ Demonstrates both success + failure paths  
-✅ Live Solana TX (Devnet)  
-✅ Clear economic impact ($2.10/event)  
-✅ Culturally-rooted logic (Tamga-Tol-Amanat) + modern tech
+# Flutter Web
+cd flutter_client
+flutter build web --no-tree-shake-icons
+cd build/web && python3 -m http.server 9000
+# → http://localhost:9000
 
----
+# React Dashboard
+npm install && npm run dev
+# → http://localhost:5173
+```
 
-## 🚀 Next Steps (If We Win)
-1. Pilot with real Kazakh SME (coffee/logistics)
-2. Integrate with Superteam KZ payment rails
-3. Scale swarm coordination + add more edge nodes
+## Demo Flow
 
----
+```
+Courier scans delivery PDF on phone
+GPS: 43.25, 76.95 | Gyro: real device
+         ↓
+Tol: 3/3 → Trust 87% → VERIFIED
+         ↓
+100 USDC → Supplier wallet (Solana devnet)
+```
 
-## 📞 Contact
-**Kalb Master (Nurlan Zhumagulov)**  — Founder  
-Telegram: @takkirshah  
-Available for live demo / Q&A anytime.
+## SDK — 10 Minute Integration
 
-*Thank you for your time. We built this for emerging markets — where trust is scarce and automation is critical.*
+```python
+from qumyrsqa import QumyrsqaClient, GPSData, GyroscopeData
+
+with QumyrsqaClient('http://localhost:8000') as c:
+    c.login('you@company.kz', 'password')
+    result = c.verify_tamga(
+        device_id='node-01',
+        gps=GPSData(43.25, 76.95, 10),
+        gyroscope=GyroscopeData(0.031, -0.018, 0.004),
+        document_hash=c.hash_string('invoice #1042'),
+    )
+    print(result.status)  # VERIFIED
+```
+
+## Team
+
+**Nurlan Zhumagulov (Kalb Master)** — Founder, Go/Rust/Architecture
+**Kaisar** — Python API Gateway, Flutter Mobile, SDK
+
+📍 Almaty, Kazakhstan · Telegram: @takkirshah

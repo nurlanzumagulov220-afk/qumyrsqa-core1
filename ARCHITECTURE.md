@@ -1,136 +1,51 @@
-# 🧠 QumyrsqaCore — Architecture Overview
+# QumyrsqaCore — Full System Architecture
 
-> *High-level technical specification for evaluators and mentors.*  
-> *⚠️ Implementation details, business rules, and domain-specific logic are omitted for IP protection.*
+> *Trust is computed locally, then anchored globally.*
 
----
+## Tech Stack
 
-## 🗺️ System Layers (Public View)
+| Layer | Technology | Purpose |
+|-------|-----------|---------|
+| Edge Node | Go (Aksakal) | Event ingestion, Tamga signing, CRDT sync |
+| API Gateway | Python / FastAPI | Sensor validation, Auth, Tol Consensus |
+| Smart Contract | Rust / Anchor | Auto-settlement on Solana |
+| Web Dashboard | React + TypeScript | Event visualization |
+| Mobile App | Flutter | Document scan, GPS liveness, sensors |
+| SDK | TypeScript + Python | Developer integration layer |
 
-```
-[Physical Event]
-     ↓
-[Edge Node: Local Verification]
-     ↓  
-[Consistency Engine: Mathematical Coherence]
-     ↓
-[Optional: External Evidence Enrichment]
-     ↓
-[Solana: On-Chain Anchoring + Auto-Execution]
-```
-
-**Core Principle**:  
-> *Trust is computed locally, then anchored globally.*  
-> No external dependency required for core decision-making.
-
----
-
-## ⚙️ Consistency Engine: Key Principles
-
-### What We Verify (Public)
-- ✅ **Causality**: Events must follow logical time order (vector clocks)
-- ✅ **Structural Validity**: Domain-aware constraints prevent logical fraud
-- ✅ **Local Consensus**: Multi-node agreement without central coordinator
-
-### How We Verify (Abstracted)
-
-```rust
-// Conceptual interface — actual implementation is proprietary
-trait ConsistencyChecker {
-    fn check_causality(&self, event: &Event, log: &Log) -> bool;
-    fn check_structure(&self, event: &Event, domain: &DomainRules) -> bool;
-    fn reach_consensus(&self, peer_signals: &[Signal]) -> ConsensusResult;
-}
-```
-
-> 🔐 *Specific algorithms, thresholds, and domain rule sets are part of QumyrsqaCore's proprietary IP and are available under NDA for integration partners.*
-
----
-
-## 🔐 Tamga Protocol: Public Interface
+## System Flow
 
 ```
-Tamga Hash = Cryptographic fingerprint of:
-  • Event payload (sanitized)
-  • Causality metadata (v_clock)
-  • Node identity (public key)
-  • Nonce + timestamp (replay protection)
+[Flutter Mobile: GPS + Gyro + PDF hash]
+        ↓
+[Python FastAPI: JWT Auth + Tol Consensus]
+  Source 1: document_hash non-empty
+  Source 2: GPS non-zero AND gyro non-zero
+  Source 3: virtual neighbor within 0.01°
+  → 2/3 = 0.87 VERIFIED | <2/3 = 0.45 BLOCKED
+        ↓
+[Go Aksakal: Ed25519 Tamga signature + CRDT]
+        ↓
+[Solana Rust/Anchor: auto-transfer or freeze]
 ```
 
-**Properties**:
-- Replay-resistant ✅
-- Source-attributable ✅
-- On-chain verifiable ✅
-- Compact (32 bytes) ✅
+## GPS Validation Rules
 
-> 🔐 *Exact hashing composition and signature scheme details are implementation-private.*
+| State | Result |
+|-------|--------|
+| Real GPS + Gyro working | VERIFIED 87% |
+| GPS denied (0,0) | BLOCKED 45% |
+| GPS ok + Gyro zero | BLOCKED 45% |
+| Both zero | BLOCKED 45% |
 
----
+## Repository Structure
 
-## 🌐 Solana Integration: Public Contract
-
-```rust
-// Public interface of the Anchor program
-#[program]
-pub mod qumyrsqa {
-    pub fn submit_verified_event(ctx: Context<Submit>, tamga: [u8;32], trust: u8) -> Result<()>;
-    pub fn execute_if_settled(ctx: Context<Exec>, action: Action) -> Result<()>;
-}
 ```
-
-**Why Solana** (public rationale):
-| Requirement | Benefit |
-|------------|---------|
-| High throughput | Handle 1000s of micro-events/hour |
-| Low cost | Economical for micro-commissions |
-| PDA support | Cheap state storage for Tamga hashes |
-| Composability | Integrate with Jupiter, Tensor, etc. |
-
----
-
-## 🛡️ Security Model (Public)
-
-| Threat | Mitigation (High-Level) |
-|--------|------------------------|
-| Replay | Nonce + timestamp + on-chain check |
-| Node compromise | Multi-node consensus required |
-| Data tampering | Immutable log + cryptographic binding |
-| Network partition | Offline-first design; sync on reconnect |
-
-> 🔐 *Detailed threat models, fallback procedures, and recovery logic are maintained in internal documentation.*
-
----
-
-## 🌍 Sovereignty & Compliance
-
-- Edge-first architecture minimizes cross-border data flow
-- All decisions are auditable via on-chain Tamga anchors
-- Protocol supports bilingual (RU/KZ) metadata fields
-- Designed for alignment with RK AI Law principles
-
----
-
-## 🔌 Integration Readiness
-
-**For potential partners**:  
-We offer a clean SDK interface for embedding QumyrsqaCore verification:
-
-```typescript
-interface QumyrsqaSDK {
-  verify(event: RawEvent): Promise<VerificationResult>;
-  onExecution(callback: (tx: string) => void): Unsubscribe;
-}
+qumyrsqa-core1/
+├── src/              ← React dashboard
+├── backend/          ← Python FastAPI (Auth + Tol Consensus)
+├── flutter_client/   ← Flutter Mobile/Web app
+├── sdk/javascript/   ← TypeScript SDK
+├── sdk/python/       ← Python SDK
+└── docs/             ← Architecture + Hackathon guide
 ```
-
-> 🔐 *Full SDK documentation, domain rule templates, and commission structures are shared under NDA after initial technical alignment.*
-
----
-
-## 📬 Contact
-
-- **System Architect**: Kalb Master (Nurlan Zhumagulov), Almaty, KZ
-- **GitHub**: https://github.com/nurlanzumagulov220-afk/qumyrsqa-core1
-- **Open to**: Technical mentorship, pilot integrations (NDA-friendly)
-
-> *Built with Steppe Primitivism + Intellectual Rigor.*  
-> *Reality → Trust → Execution.*

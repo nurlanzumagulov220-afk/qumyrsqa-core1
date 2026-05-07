@@ -1,0 +1,27 @@
+{
+  "name": "@qumyrsqa/sdk",
+  "version": "1.0.0",
+  "description": "Qumyrsqa Tamga SDK — Hardware-anchored data trust layer",
+  "main": "dist/index.js",
+  "module": "dist/index.esm.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.esm.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": ["dist", "src"],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "node examples/test.mjs"
+  },
+  "keywords": ["qumyrsqa", "tamga", "tol", "blockchain", "solana", "trust", "verification"],
+  "author": "Qumyrsqa Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
