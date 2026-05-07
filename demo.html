@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nice.like × QumyrsqaCore — Verified Audit</title>
+    <style>
+        :root {
+            --bg: #030304;
+            --card: #0a0a0c;
+            --border: #18181b;
+            --text: #fafafa;
+            --text-muted: #71717a;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --font-mono: "SF Mono", "Roboto Mono", monospace;
+            --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: var(--font-sans);
+            min-height: 100vh;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container { width: 100%; max-width: 1200px; }
+        
+        /* HERO */
+        .hero { margin-bottom: 24px; padding: 20px; }
+        .hero h1 { font-size: 28px; font-weight: 600; margin-bottom: 8px; }
+        .hero p { color: var(--text-muted); font-size: 16px; }
+        .hero-metrics {
+            display: flex; gap: 24px; margin-top: 16px; flex-wrap: wrap;
+        }
+        .metric { display: flex; flex-direction: column; }
+        .metric-value { font-family: var(--font-mono); font-size: 20px; font-weight: 600; }
+        .metric-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        
+        /* GRID */
+        .grid { display: grid; grid-template-columns: 280px 1fr 280px; gap: 20px; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+        
+        .panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        .panel-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; font-weight: 500; }
+        
+        /* PIPELINE */
+        .pipeline { display: flex; flex-direction: column; gap: 12px; }
+        .step {
+            padding: 12px 16px;
+            background: #18181b;
+            border-radius: 10px;
+            font-size: 14px;
+            opacity: 0.4;
+            transition: all 0.4s var(--ease-out);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .step::before {
+            content: ""; width: 8px; height: 8px; border-radius: 50%;
+            background: var(--text-muted); transition: all 0.3s;
+        }
+        .step.active { opacity: 1; background: #27272a; }
+        .step.active::before { background: var(--warning); box-shadow: 0 0 10px var(--warning); }
+        .step.done::before { background: var(--success); box-shadow: 0 0 10px var(--success); }
+        
+        /* TRUST CENTER */
+        .trust-center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px 20px; }
+        .trust-label { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; }
+        .trust-value {
+            font-family: var(--font-mono); font-size: 64px; font-weight: 700;
+            margin: 12px 0; color: var(--text-muted); transition: color 0.5s, text-shadow 0.5s;
+        }
+        .trust-value.success { color: var(--success); text-shadow: 0 0 30px rgba(16,185,129,0.3); }
+        .sources { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; }
+        .risk-row { margin-top: 20px; }
+        .risk-label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; }
+        .risk-value { font-family: var(--font-mono); font-size: 20px; margin-top: 4px; color: var(--danger); position: relative; }
+        .risk-value.low { color: var(--success); }
+        .risk-value.low::after {
+            content: ""; position: absolute; left: -5%; top: 50%; width: 110%; height: 2px;
+            background: var(--success); transform: scaleX(0); transform-origin: left;
+            transition: transform 0.6s var(--ease-out);
+        }
+        .risk-value.low::after { transform: scaleX(1); }
+        .status-badge {
+            margin-top: 24px; padding: 10px 24px; border-radius: 99px;
+            font-size: 16px; font-weight: 700; letter-spacing: 0.05em;
+            background: var(--border); color: var(--text-muted);
+            opacity: 0; transform: scale(0.95); transition: all 0.5s var(--ease-spring);
+        }
+        .status-badge.visible { opacity: 1; transform: scale(1); }
+        .status-badge.success { background: rgba(16,185,129,0.15); color: var(--success); border: 1px solid rgba(16,185,129,0.3); }
+        .status-badge.danger { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+        
+        /* RESULT */
+        .result-title { font-size: 12px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 16px; }
+        .result-status { font-size: 20px; font-weight: 600; color: var(--success); margin-bottom: 12px; }
+        .result-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 20px; }
+        .payouts { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .payout-row { display: flex; justify-content: space-between; font-size: 14px; }
+        .payout-label { color: var(--text-muted); }
+        .payout-value { font-family: var(--font-mono); font-weight: 500; }
+        .tx-link {
+            display: block; padding: 10px; background: #18181b; border-radius: 8px;
+            font-size: 12px; color: var(--text-muted); text-decoration: none;
+            opacity: 0; transition: opacity 0.4s, background 0.3s; word-break: break-all;
+        }
+        .tx-link.visible { opacity: 1; }
+        .tx-link:hover { background: #27272a; color: var(--text); }
+        
+        /* CONTROLS */
+        .controls { margin-top: 24px; display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; }
+        .btn {
+            padding: 12px 20px; border-radius: 10px; border: none; font-size: 14px; font-weight: 500;
+            cursor: pointer; transition: all 0.3s var(--ease-out); letter-spacing: 0.02em;
+        }
+        .btn-valid { background: var(--success); color: #030304; }
+        .btn-valid:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16,185,129,0.2); }
+        .btn-fraud { background: rgba(239,68,68,0.15); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+        .btn-fraud:hover { background: rgba(239,68,68,0.25); }
+        .btn-reset { background: transparent; color: var(--text-muted); border: 1px solid var(--border); }
+        .btn-reset:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- HERO -->
+        <div class="hero">
+            <h1>Nace.like × QumyrsqaCore</h1>
+            <p>Verified Audit → Automatic Settlement</p>
+            <div class="hero-metrics">
+                <div class="metric">
+                    <div class="metric-value" style="color:var(--success)">↓ 91%</div>
+                    <div class="metric-label">Fraud Exposure</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">HIGH</div>
+                    <div class="metric-label">Verification Confidence</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">2.3s</div>
+                    <div class="metric-label">Latency to Trust</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GRID -->
+        <div class="grid">
+            <!-- LEFT: Pipeline -->
+            <div class="panel">
+                <div class="panel-title">Verification Pipeline</div>
+                <div class="pipeline">
+                    <div class="step" id="step-upload"><span>Upload Document</span></div>
+                    <div class="step" id="step-tamga"><span>Tamga (ID Created)</span></div>
+                    <div class="step" id="step-tol"><span>Tol (Verification)</span></div>
+                    <div class="step" id="step-trust"><span>Trust Score</span></div>
+                </div>
+            </div>
+
+            <!-- CENTER: Trust -->
+            <div class="panel trust-center">
+                <div class="trust-label">Trust Score</div>
+                <div class="trust-value" id="trust-val">0%</div>
+                <div class="sources" id="sources">Sources: -- / 3 consensus</div>
+                <div class="risk-row">
+                    <div class="risk-label">Risk Index</div>
+                    <div class="risk-value" id="risk-val">0.62</div>
+                </div>
+                <div class="status-badge" id="status">IDLE</div>
+            </div>
+
+            <!-- RIGHT: Result -->
+            <div class="panel">
+                <div class="result-title">Audit Result</div>
+                <div class="result-status" id="result-status">—</div>
+                <div class="result-desc" id="result-desc">Awaiting verification</div>
+                <div class="payouts">
+                    <div class="payout-row">
+                        <span class="payout-label">Client Payout</span>
+                        <span class="payout-value" id="payout-client">$9.00</span>
+                    </div>
+                    <div class="payout-row">
+                        <span class="payout-label">Platform Fee</span>
+                        <span class="payout-value" id="payout-fee">$1.80</span>
+                    </div>
+                </div>
+                <a href="#" class="tx-link" id="tx-link" target="_blank">🔗 View Solana TX</a>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <button class="btn btn-valid" onclick="runDemo('valid')">✅ Simulate Valid Audit</button>
+            <button class="btn btn-fraud" onclick="runDemo('fraud')">⛔ Simulate Fraud</button>
+            <button class="btn btn-reset" onclick="resetDemo()">↺ Reset</button>
+        </div>
+    </div>
+
+    <script>
+        const delay = ms => new Promise(res => setTimeout(res, ms));
+        
+        const els = {
+            steps: ['step-upload','step-tamga','step-tol','step-trust'].map(id => document.getElementById(id)),
+            trust: document.getElementById('trust-val'),
+            sources: document.getElementById('sources'),
+            risk: document.getElementById('risk-val'),
+            status: document.getElementById('status'),
+            resultStatus: document.getElementById('result-status'),
+            resultDesc: document.getElementById('result-desc'),
+            payoutClient: document.getElementById('payout-client'),
+            payoutFee: document.getElementById('payout-fee'),
+            tx: document.getElementById('tx-link')
+        };
+
+        // 🔥 ЗАМЕНИ НА СВОЮ РЕАЛЬНУЮ ССЫЛКУ
+       const REAL_TX_URL = "https://explorer.solana.com/tx/KT4deDyzHxAxe37ydYiffVAtBF6HFT5puSLNdS3KV2U69YCNt27XhcDMTWsENoYdXcqaERuGnSv1wnzQZahWQCc?cluster=devnet";
+        async function animateNumber(el, target, suffix = '', duration = 800) {
+            const start = 0;
+            const startTime = performance.now();
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const ease = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(start + (target - start) * ease);
+                el.textContent = current + suffix;
+                if (progress < 1) requestAnimationFrame(update);
+            }
+            requestAnimationFrame(update);
+        }
+
+        async function runDemo(type) {
+            resetUI(false);
+            
+            // Pipeline animation
+            for (let i = 0; i < els.steps.length; i++) {
+                await delay(400);
+                els.steps[i].classList.add('active');
+                if (i > 0) els.steps[i-1].classList.add('done');
+            }
+            els.steps[3].classList.add('done');
+            
+            await delay(200);
+            
+            if (type === 'valid') {
+                // Trust rise
+                await animateNumber(els.trust, 87, '%');
+                els.trust.classList.add('success');
+                els.sources.textContent = 'Sources: 3 / 3 consensus';
+                
+                // Risk drop
+                els.risk.textContent = '0.07';
+                els.risk.classList.add('low');
+                
+                // Status
+                await delay(300);
+                els.status.textContent = 'SETTLED';
+                els.status.className = 'status-badge visible success';
+                
+                // Result panel
+                els.resultStatus.textContent = 'SETTLED';
+                els.resultStatus.style.color = 'var(--success)';
+                els.resultDesc.textContent = 'Audit completed automatically';
+                els.payoutClient.style.color = 'var(--success)';
+                els.payoutFee.style.color = 'var(--success)';
+                
+                // TX link
+                await delay(400);
+                els.tx.href = REAL_TX_URL;
+                els.tx.classList.add('visible');
+                
+            } else {
+                // Fraud scenario
+                await animateNumber(els.trust, 45, '%');
+                els.sources.textContent = 'Sources: 1 / 3 consensus';
+                els.risk.textContent = '0.55';
+                els.risk.classList.remove('low');
+                
+                await delay(300);
+                els.status.textContent = 'BLOCKED';
+                els.status.className = 'status-badge visible danger';
+                
+                els.resultStatus.textContent = 'BLOCKED';
+                els.resultStatus.style.color = 'var(--danger)';
+                els.resultDesc.textContent = 'Manual review required';
+                els.payoutClient.style.color = 'var(--danger)';
+                els.payoutFee.style.color = 'var(--danger)';
+                
+                els.tx.textContent = '⛔ Execution halted';
+                els.tx.href = '#';
+                els.tx.classList.add('visible');
+            }
+        }
+
+        function resetUI(full = true) {
+            els.steps.forEach(s => { s.classList.remove('active','done'); });
+            els.trust.textContent = '0%';
+            els.trust.classList.remove('success');
+            els.sources.textContent = 'Sources: -- / 3 consensus';
+            els.risk.textContent = '0.62';
+            els.risk.classList.remove('low');
+            els.status.textContent = 'IDLE';
+            els.status.className = 'status-badge';
+            els.resultStatus.textContent = '—';
+            els.resultDesc.textContent = 'Awaiting verification';
+            els.payoutClient.style.color = '';
+            els.payoutFee.style.color = '';
+            els.tx.classList.remove('visible');
+            els.tx.textContent = '🔗 View Solana TX';
+            els.tx.href = '#';
+        }
+
+        function resetDemo() { resetUI(true); }
+    </script>
+</body>
+</html>
